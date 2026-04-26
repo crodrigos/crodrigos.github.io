@@ -1,14 +1,21 @@
-import React from 'react'
-import { OSNavbar } from './os-navbar'
+"use client";
 
-import './styles.css'
+import React from "react";
+import { OSNavbar } from "./os-navbar";
 
-export const OSContainer : React.FC = () => {
+import "./styles.css";
+import Draggable from "react-draggable";
+import { OSWindow } from "./os-window";
 
-    return <div className='bg-[#008080] h-lvh flex flex-col'>
-        <div className='flex-1'>
-        </div>
-        <OSNavbar></OSNavbar>
-    </div>
-
-}
+export const OSContainer: React.FC = () => {
+	return (
+		<div className="bg-[#008080] h-lvh flex flex-col">
+			<div className="flex-1">
+				<OSWindow>
+					<textarea name="" id=""></textarea>
+				</OSWindow>
+			</div>
+			<OSNavbar></OSNavbar>
+		</div>
+	);
+};
