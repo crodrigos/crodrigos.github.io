@@ -1,0 +1,7 @@
+
+
+@layer components {
+    .oscomp {
+        border: 4px outset;
+    }
+}
