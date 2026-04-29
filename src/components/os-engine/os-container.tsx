@@ -11,7 +11,7 @@ export const OSContainer: React.FC = () => {
 	return (
 		<div className="bg-[#008080] h-lvh flex flex-col">
 			<div className="flex-1">
-				<OSWindow>
+				<OSWindow title="Test Window">
 					<textarea name="" id=""></textarea>
 				</OSWindow>
 			</div>

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { OSTitleBarButton } from "./os-titlebar-button";
 
 interface OSWindowsProps {
 	children: React.ReactNode;
+    title?: string
 }
 
 export const OSWindow: React.FC<OSWindowsProps> = (props) => {
-
 	const windowRef = useRef<HTMLDivElement>(null);
 
 	const [isDragging, setIsDragging] = useState(false);
@@ -30,8 +31,6 @@ export const OSWindow: React.FC<OSWindowsProps> = (props) => {
 
 		dragRef.current.x -= delta.x;
 		dragRef.current.y -= delta.y;
-
-		console.log(lastRef.current, dragRef.current);
 
 		cancelAnimationFrame(frameId.current);
 		frameId.current = requestAnimationFrame(() => {
@@ -64,15 +63,22 @@ export const OSWindow: React.FC<OSWindowsProps> = (props) => {
 	return (
 		<div
 			ref={windowRef}
-			className="absolute min-w-2xs min-h-40 w-lg oscomp"
+			className="absolute min-w-2xs min-h-40 w-lg oscomp flex flex-col"
 		>
 			<nav
 				onMouseDown={handleMouseDown}
-				className="bg-[#000082] h-8 select-none mb-0.5"
+				className="bg-[#000082] h-7 select-none mb-0.5 flex flex-column items-center justify-around"
 			>
-				{isDragging ? <p>BOMBOCLAT</p> : <></>}
+				<div className="flex-1/2 flex items-center justify-start pl-1">
+                    {props.title?props.title:" "}
+                </div>
+				<div className="flex-1/2 flex items-center justify-end pr-1">
+                    <OSTitleBarButton/>
+                </div>
 			</nav>
-			{props.children}
+			<div className="flex-1 bg-white text-black">
+                {props.children}
+            </div>
 		</div>
 	);
 };
