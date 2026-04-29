@@ -1,10 +1,15 @@
-
-export interface OSTitleBarButtonProps {}
-
-export const OSTitleBarButton : React.FC<OSTitleBarButtonProps> = (p) => {
-
-    return <button className="oscomp h-full">
-        X
-    </button>
-
+export interface OSTitleBarButtonProps {
+	type?: "close" | "minimize";
+	onClick?: () => void;
 }
+
+export const OSTitleBarButton: React.FC<OSTitleBarButtonProps> = (props) => {
+	return (
+		<button
+			onClick={props.onClick}
+			className="os-button shadow z-50 text-sm select-none hover:brightness-85 active:brightness-70 line"
+		>
+			X
+		</button>
+	);
+};

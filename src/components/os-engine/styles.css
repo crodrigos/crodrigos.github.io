@@ -1,9 +1,23 @@
 
 
 @layer components {
-    .oscomp {
+    .os-component {
         padding: 2px;
         background-color: #C3C3C3;
         border: 4px outset;
+    }
+
+    .os-button {
+        padding: 2px;
+        background-color: #C3C3C3;
+        border: 2px outset;
+        height: 20px;
+        width: 20px;
+        aspect-ratio: 1;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: black;
     }
 }

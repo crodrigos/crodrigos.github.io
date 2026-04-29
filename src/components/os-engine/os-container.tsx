@@ -2,20 +2,26 @@
 
 import React from "react";
 import { OSNavbar } from "./os-navbar";
+import { OSWindow } from "./os-window";
+import { useOSManagerContext } from "./os-manager";
+import ExampleApp from "./apps/example-app";
 
 import "./styles.css";
-import Draggable from "react-draggable";
-import { OSWindow } from "./os-window";
 
 export const OSContainer: React.FC = () => {
+
+	const osContext = useOSManagerContext();
+
 	return (
 		<div className="bg-[#008080] h-lvh flex flex-col">
 			<div className="flex-1">
-				<OSWindow title="Test Window">
-					<textarea name="" id=""></textarea>
-				</OSWindow>
+				<OSWindow app={ExampleApp} />
+
+				{osContext?.activeApps.map((app) => {
+					return <OSWindow key={app.id} app={app} />;
+				})}
 			</div>
-			<OSNavbar></OSNavbar>
+			<OSNavbar />
 		</div>
 	);
 };
