@@ -5,47 +5,73 @@ interface OSWindowsProps {
 }
 
 export const OSWindow: React.FC<OSWindowsProps> = (props) => {
-	const position = useRef({ x: 12, y: 12 });
-	const navRef = useRef<HTMLElement>(null);
+
+	const windowRef = useRef<HTMLDivElement>(null);
+
 	const [isDragging, setIsDragging] = useState(false);
 
-	const handleMouseDrag = (e: React.MouseEvent<HTMLElement>) => {
+	const frameId = useRef(0);
+
+	const lastRef = useRef({ x: 0, y: 0 });
+	const dragRef = useRef({ x: 0, y: 0 });
+
+	const handleMouseDrag = (e: MouseEvent) => {
 		if (!isDragging) return;
 
-        position.current.x += e.movementX;
-		position.current.y += e.movementY;
+		const delta = {
+			x: lastRef.current.x - e.pageX,
+			y: lastRef.current.y - e.pageY,
+		};
 
-		if (navRef.current?.parentElement) {
-			navRef.current.parentElement.style.left = `${position.current.x}px`;
-			navRef.current.parentElement.style.top = `${position.current.y}px`;
-		}
+		lastRef.current = {
+			x: e.pageX,
+			y: e.pageY,
+		};
+
+		dragRef.current.x -= delta.x;
+		dragRef.current.y -= delta.y;
+
+		console.log(lastRef.current, dragRef.current);
+
+		cancelAnimationFrame(frameId.current);
+		frameId.current = requestAnimationFrame(() => {
+			windowRef.current!.style.transform = `translate3d(${dragRef.current.x}px, ${dragRef.current.y}px, 0)`;
+		});
 	};
 
 	const handleMouseDown = (e: React.MouseEvent<HTMLElement>) => {
 		setIsDragging(true);
-        console.log(isDragging);
+		lastRef.current = {
+			x: e.pageX,
+			y: e.pageY,
+		};
 	};
 
-	const handleMouseUp = (e: React.MouseEvent<HTMLElement>) => {
+	const handleMouseUp = (e: MouseEvent) => {
 		setIsDragging(false);
-        console.log(isDragging);
 	};
+
+	useEffect(() => {
+		document.addEventListener("mousemove", handleMouseDrag);
+		document.addEventListener("mouseup", handleMouseUp);
+
+		return () => {
+			document.removeEventListener("mousemove", handleMouseDrag);
+			document.removeEventListener("mouseup", handleMouseUp);
+		};
+	}, [isDragging]);
 
 	return (
 		<div
+			ref={windowRef}
 			className="absolute min-w-2xs min-h-40 w-lg oscomp"
-			style={{ left: position.current.x, top: position.current.y }}
 		>
 			<nav
-				ref={navRef}
-                onMouseDown={handleMouseDown}
-                onMouseLeave={handleMouseUp}
-                onMouseUp={handleMouseUp}
-                onMouseMove={handleMouseDrag}
-				className="bg-[#000082] h-8 select-none"
+				onMouseDown={handleMouseDown}
+				className="bg-[#000082] h-8 select-none mb-0.5"
 			>
-                {isDragging?<p>BOMBOCLAT</p>:<></>}
-            </nav>
+				{isDragging ? <p>BOMBOCLAT</p> : <></>}
+			</nav>
 			{props.children}
 		</div>
 	);
