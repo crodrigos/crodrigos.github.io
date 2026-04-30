@@ -16,7 +16,4 @@ export const ExampleApp: App = {
     component: <ExampleAppComponent />,
 }
 
-Logger.Log(`${ExampleApp.title} ${ExampleApp.id}`);
-
-
 export default ExampleApp;
