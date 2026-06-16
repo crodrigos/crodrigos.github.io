@@ -1,11 +1,11 @@
-import { TAppId } from "./apps/app";
+import { AppIdType } from "./apps/app";
 import { useOSManagerContext } from "./os-manager";
 
 export const OSNavbar: React.FC = () => {
 	const osContext = useOSManagerContext();
 
 	return (
-		<div className="h-12 os-component z-50">
+		<div className="h-12 os-component z-50 flex gap-2">
 			{osContext?.apps.map((v) => (
 				<div
 					key={v.id}

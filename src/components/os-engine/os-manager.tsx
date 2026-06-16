@@ -1,16 +1,16 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { App, TAppId } from "./apps/app";
+import { App, AppIdType } from "./apps/app";
 import Logger from "@crodrigos/logger-ts";
 import appRegistry from "./apps/app-registry";
 
 export interface OSManagerContextProps {
 	apps: App[];
 	activeApps: App[];
-	openApp: (id: TAppId) => void;
-	closeApp: (id: TAppId) => void;
-    isAppOpen: (id:TAppId) => boolean;
+	openApp: (id: AppIdType) => void;
+	closeApp: (id: AppIdType) => void;
+    isAppOpen: (id:AppIdType) => boolean;
 }
 
 export const OSManagerContext = createContext<
@@ -25,10 +25,10 @@ export const OSManagerProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [activeApps, setActiveApps] = useState<App[]>([]);
 
 	/**
-	 *
+     * 
 	 * @param id
 	 */
-	const openApp = (id: TAppId) => {
+	const openApp = (id: AppIdType) => {
 
 		// Check if app with id exits
         if (isAppOpen(id)) {
@@ -51,7 +51,7 @@ export const OSManagerProvider: React.FC<{ children: React.ReactNode }> = ({
 	 *
 	 * @param id
 	 */
-	const closeApp = (id: TAppId) => {
+	const closeApp = (id: AppIdType) => {
 
         if (!activeApps.some(app => app.id === id)) {
             Logger.Error(`App with id ${id} does not exist`)
@@ -76,7 +76,7 @@ export const OSManagerProvider: React.FC<{ children: React.ReactNode }> = ({
         apps.forEach(v => Logger.Log(v.title))
     }
 
-    const isAppOpen = (id: TAppId) => {
+    const isAppOpen = (id: AppIdType) => {
         activeApps.forEach((v) => {
             if (id===v.id) return true
         })

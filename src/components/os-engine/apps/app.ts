@@ -1,13 +1,12 @@
 
 
-export type TAppId = string;
+export type AppIdType = string;
 export interface App {
-    id: TAppId,
+    id: AppIdType,
     title: string,
     component: React.ReactNode,
 
-    icon?: ImageBitmap,
-    active?: boolean,
+    icon?: ImageBitmap, // #FIXME: 
     openByDefault?: boolean
 }
 

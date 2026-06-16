@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { v4 } from "uuid";
 import App from './app'
 import Logger from '@crodrigos/logger-ts';
+import { addAppToRegistry } from './app-registry';
 
 export const ExampleAppComponent : React.FC = () => {
     return <div>

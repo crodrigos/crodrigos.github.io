@@ -4,14 +4,14 @@ import App from "./apps/app";
 import { useOSManagerContext } from "./os-manager";
 
 interface OSWindowsProps {
-    app?: App;
-    active?: boolean;
-    onFocus?: () => void;
+	app?: App;
+	active?: boolean;
+	onFocus?: () => void;
 }
 
 export const OSWindow: React.FC<OSWindowsProps> = (props) => {
-
-    const osContext = useOSManagerContext();
+    
+	const osContext = useOSManagerContext();
 
 	const windowRef = useRef<HTMLDivElement>(null);
 
@@ -69,23 +69,29 @@ export const OSWindow: React.FC<OSWindowsProps> = (props) => {
 	return (
 		<div
 			ref={windowRef}
-            onFocus={props.onFocus}
-			className="os-component absolute min-w-2xs min-h-40 w-lg flex flex-col"
+			onFocus={props.onFocus}
+			className="os-component absolute min-w-2xs min-h-40 w-lg flex flex-col resize overflow-scroll"
 		>
 			<nav
 				onMouseDown={handleMouseDown}
-				className={`${props.active?"bg-[#000082]":"bg-[#969696]"} h-7 select-none mb-0.5 flex flex-column items-center justify-around`}
+				className={`${props.active ? "bg-[#000082]" : "bg-[#969696]"} h-7 select-none mb-0.5 flex flex-column items-center justify-around`}
 			>
 				<div className="flex-1/2 flex items-center justify-start pl-1">
-                    {props.app?.title?props.app.title:" "}
-                </div>
+					{props.app?.title ? props.app.title : " "}
+				</div>
 				<div className="flex-1/2 flex items-center justify-end pr-1">
-					<OSTitleBarButton onClick={props.app?.id ? () => osContext?.closeApp(props.app!.id) : undefined}/>
+					<OSTitleBarButton
+						onClick={
+							props.app?.id
+								? () => osContext?.closeApp(props.app!.id)
+								: undefined
+						}
+					/>
 				</div>
 			</nav>
-			<div className="flex-1 bg-white text-black">
-                {props.app?.component}
-            </div>
+			<div className="flex-1 bg-white text-black ">
+				{props.app?.component}
+			</div>
 		</div>
 	);
 };
