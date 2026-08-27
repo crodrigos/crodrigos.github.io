@@ -30,7 +30,7 @@ const AppComponent = () => {
 };
 
 export const CubeApp: App = {
-	id: v6(),
+	registryId: v6(),
 	title: "The Cube",
 	component: <AppComponent />,
 };

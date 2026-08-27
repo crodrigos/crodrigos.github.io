@@ -1,4 +1,4 @@
-import { AppIdType } from "./apps/app";
+import { RegistryID } from "./apps/app";
 import { useOSManagerContext } from "./os-manager";
 
 export const OSNavbar: React.FC = () => {
@@ -8,11 +8,11 @@ export const OSNavbar: React.FC = () => {
 		<div className="h-12 os-component z-50 flex gap-2">
 			{osContext?.apps.map((v) => (
 				<div
-					key={v.id}
+					key={v.registryId}
 					className={`text-black os-component os-button hover:brightness-90 active:brightness-80
                         flex items-center h-full min-w-32 w-fit px-1 
-                        ${osContext.isAppOpen(v.id) ? "border-3" : "border-2"}`}
-					onClick={() => osContext.openApp(v.id)}
+                        ${osContext.isAppOpen(v.registryId) ? "border-3" : "border-2"}`}
+					onClick={() => osContext.openApp(v.registryId)}
 				>
 					{v.title}
 				</div>

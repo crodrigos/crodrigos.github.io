@@ -1,16 +1,21 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { App, AppIdType } from "./apps/app";
+import {
+	App,
+	RegistryID,
+	RunningApp,
+	RegistryID as RunningID,
+} from "./apps/app";
 import Logger from "@crodrigos/logger-ts";
 import appRegistry from "./apps/app-registry";
 
 export interface OSManagerContextProps {
 	apps: App[];
-	activeApps: App[];
-	openApp: (id: AppIdType) => void;
-	closeApp: (id: AppIdType) => void;
-    isAppOpen: (id:AppIdType) => boolean;
+	activeApps: RunningApp[];
+	openApp: (id: RunningID) => void;
+	closeApp: (id: RunningID) => void;
+	isAppOpen: (id: RunningID) => boolean;
 }
 
 export const OSManagerContext = createContext<
@@ -22,81 +27,78 @@ export const OSManagerProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
 	// Registry of apps
 	const [apps, setApps] = useState<App[]>(appRegistry);
-	const [activeApps, setActiveApps] = useState<App[]>([]);
+	const [activeApps, setActiveApps] = useState<RunningApp[]>([]);
 
 	/**
-     * 
-	 * @param id
+	 *
+	 * @param registryId
 	 */
-	const openApp = (id: AppIdType) => {
-
+	const openApp = (registryId: RegistryID) => {
 		// Check if app with id exits
-        if (isAppOpen(id)) {
-            Logger.Error(`App ${id} is already open`)
-            return;
-        };
+		if (isAppOpen(registryId)) {
+			Logger.Warn(`App ${registryId} is already open`);
+			//return;
+		}
 
-		apps.forEach((v) => {
-			if (v.id === id) {
-                setActiveApps(activeApps.concat(v));
-                console.log(activeApps);
-                
-                //v.active = true;
-            }
+		apps.forEach((app) => {
+			if (app.registryId === registryId) {
+				let newApp = {
+					app: app,
+					runningId: crypto.randomUUID(),
+				};
+				setActiveApps((prev) => prev.concat(newApp));
+				console.log(newApp);
+				Logger.Success(`Open ${app.title}`);
+			}
 		});
-		Logger.Success(`Open ${id}`);
 	};
 
 	/**
 	 *
 	 * @param id
 	 */
-	const closeApp = (id: AppIdType) => {
+	const closeApp = (id: RunningID) => {
+		if (!activeApps.some((app) => app.runningId === id)) {
+			Logger.Warn(`App with id ${id} does not exist`);
+			return;
+		}
 
-        if (!activeApps.some(app => app.id === id)) {
-            Logger.Error(`App with id ${id} does not exist`)
-        }   
+		setActiveApps(activeApps.filter((app) => app.runningId !== id));
 
-		setActiveApps(activeApps.filter((app) => app.id !== id));
-        Logger.Success(`Closing ${id}`)
-    };
+		Logger.Success(`Closing ${id}`);
+	};
 
-    function openByDefault() {
-        Logger.Log("Openning apps on startup")
-        apps.forEach(v => {
-            if (v.openByDefault) {
-                Logger.Log(`\t${v.id}`)
-                openApp(v.id)
-            }
-        })
-    }
+	function openByDefault() {
+		Logger.Log("Openning apps on startup");
+		apps.forEach((v) => {
+			if (v.openByDefault) {
+				Logger.Log(`\t${v.registryId}`);
+				openApp(v.registryId);
+			}
+		});
+	}
 
-    function logAvailableApps() {
-        Logger.Log(`Available apps: ${apps.length}`)
-        apps.forEach(v => Logger.Log(v.title))
-    }
+	function logAvailableApps() {
+		Logger.Log(`Available apps: ${apps.length}`);
+		apps.forEach((v) => Logger.Log(v.title));
+	}
 
-    const isAppOpen = (id: AppIdType) => {
-        activeApps.forEach((v) => {
-            if (id===v.id) return true
-        })
-        return false
-    }
+	const isAppOpen = (id: RegistryID) => {
+		return activeApps.some((app) => app.app.registryId === id);
+	};
 
-    useEffect(() => {
-        logAvailableApps();
-        openByDefault();
-    }, [])
+	useEffect(() => {
+		logAvailableApps();
+		openByDefault();
+	}, []);
 
 	let ctx: OSManagerContextProps = {
 		apps: apps,
 		activeApps: activeApps,
 		openApp: openApp,
 		closeApp: closeApp,
-        isAppOpen: isAppOpen
+		isAppOpen: isAppOpen,
 	};
-
-    
 
 	return <OSManagerContext value={ctx}>{children}</OSManagerContext>;
 };

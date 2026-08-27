@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { OSNavbar } from "./os-navbar";
-import { OSWindow } from "./os-window";
+import { OSNavbar } from "./os-desktop-navbar";
+import { OSWindow } from "./window/os-window";
 import { useOSManagerContext } from "./os-manager";
 import ExampleApp from "./apps/example-app";
 
@@ -15,7 +15,7 @@ export const OSContainer: React.FC = () => {
 		<div className="bg-[#008080] h-lvh flex flex-col">
 			<div className="flex-1">
 				{osContext?.activeApps.map((app) => {
-					return <OSWindow key={app.id} app={app} />;
+					return <OSWindow key={app.runningId} app={app} />;
 				})}
 			</div>
 			<OSNavbar />

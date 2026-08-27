@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { OSTitleBarButton } from "./os-titlebar-button";
-import App from "./apps/app";
-import { useOSManagerContext } from "./os-manager";
+import {RunningApp} from "../apps/app";
+import { useOSManagerContext } from "../os-manager";
 
 interface OSWindowsProps {
-	app?: App;
+	app?: RunningApp;
 	active?: boolean;
 	onFocus?: () => void;
+    size?: {
+        width: number, height: number
+    }
 }
 
 export const OSWindow: React.FC<OSWindowsProps> = (props) => {
@@ -17,36 +20,37 @@ export const OSWindow: React.FC<OSWindowsProps> = (props) => {
 
 	const [isDragging, setIsDragging] = useState(false);
 
-	const frameId = useRef(0);
+	const dragFrameId = useRef(0);
+	const lastDragRef = useRef({ x: 0, y: 0 });
+	const currentDragRef = useRef({ x: 0, y: 0 });
 
-	const lastRef = useRef({ x: 0, y: 0 });
-	const dragRef = useRef({ x: 0, y: 0 });
+    const app = useRef(props.app?.app)
 
 	const handleMouseDrag = (e: MouseEvent) => {
 		if (!isDragging) return;
 
 		const delta = {
-			x: lastRef.current.x - e.pageX,
-			y: lastRef.current.y - e.pageY,
+			x: lastDragRef.current.x - e.pageX,
+			y: lastDragRef.current.y - e.pageY,
 		};
 
-		lastRef.current = {
+		lastDragRef.current = {
 			x: e.pageX,
 			y: e.pageY,
 		};
 
-		dragRef.current.x -= delta.x;
-		dragRef.current.y -= delta.y;
+		currentDragRef.current.x -= delta.x;
+		currentDragRef.current.y -= delta.y;
 
-		cancelAnimationFrame(frameId.current);
-		frameId.current = requestAnimationFrame(() => {
-			windowRef.current!.style.transform = `translate3d(${dragRef.current.x}px, ${dragRef.current.y}px, 0)`;
+		cancelAnimationFrame(dragFrameId.current);
+		dragFrameId.current = requestAnimationFrame(() => {
+			windowRef.current!.style.transform = `translate3d(${currentDragRef.current.x}px, ${currentDragRef.current.y}px, 0)`;
 		});
 	};
 
 	const handleMouseDown = (e: React.MouseEvent<HTMLElement>) => {
 		setIsDragging(true);
-		lastRef.current = {
+		lastDragRef.current = {
 			x: e.pageX,
 			y: e.pageY,
 		};
@@ -66,31 +70,34 @@ export const OSWindow: React.FC<OSWindowsProps> = (props) => {
 		};
 	}, [isDragging]);
 
+
+    
+
 	return (
 		<div
 			ref={windowRef}
 			onFocus={props.onFocus}
-			className="os-component absolute min-w-2xs min-h-40 w-lg flex flex-col resize overflow-scroll"
+			className='os-component absolute min-w-2xs min-h-40 flex flex-col resize overflow-scroll'
 		>
 			<nav
 				onMouseDown={handleMouseDown}
 				className={`${props.active ? "bg-[#000082]" : "bg-[#969696]"} h-7 select-none mb-0.5 flex flex-column items-center justify-around`}
 			>
 				<div className="flex-1/2 flex items-center justify-start pl-1">
-					{props.app?.title ? props.app.title : " "}
+					{props.app ? props.app?.app.title : " "}
 				</div>
 				<div className="flex-1/2 flex items-center justify-end pr-1">
 					<OSTitleBarButton
 						onClick={
-							props.app?.id
-								? () => osContext?.closeApp(props.app!.id)
+							props.app?.runningId
+								? () => osContext?.closeApp(props.app!.runningId)
 								: undefined
 						}
 					/>
 				</div>
 			</nav>
 			<div className="flex-1 bg-white text-black ">
-				{props.app?.component}
+				{props.app?.app.component}
 			</div>
 		</div>
 	);

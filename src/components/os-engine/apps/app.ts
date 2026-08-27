@@ -1,13 +1,19 @@
 
+export type ID = string
 
-export type AppIdType = string;
+export type RegistryID = ID;
 export interface App {
-    id: AppIdType,
+    registryId: RegistryID,
     title: string,
     component: React.ReactNode,
 
     icon?: ImageBitmap, // #FIXME: 
-    openByDefault?: boolean
+    openByDefault?: boolean,
+    
 }
 
-export default App;
+export type RunningID = ID;
+export interface RunningApp {
+    runningId: RunningID,
+    app: App,
+}

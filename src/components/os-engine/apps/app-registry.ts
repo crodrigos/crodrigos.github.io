@@ -1,5 +1,5 @@
 import Logger from "@crodrigos/logger-ts";
-import App from "./app";
+import {App} from "./app";
 import ExampleApp from "./example-app";
 import { CubeApp } from "./the-cube/the-cube";
 
